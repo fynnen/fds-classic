@@ -6,7 +6,6 @@ node_js:
 script:
   - cd client && npm install && cd ..
   - cd client && npm run build && cd ..
-  - cd client && npm test && cd ..
   - cd server && npm install && cd ..
   - cd server && npm run build && cd ..
   - cd server && npm run test && cd ..
