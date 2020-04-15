@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { client } from "./graphql/client";
 import { RaidersList } from "./components/RaidersList";
 import styled from "styled-components";
+import { RaiderDetails } from "./components/RaiderDetails";
 
 const AppSection = styled.section`
   display: flex;
@@ -32,26 +33,29 @@ const WidgetPanel = styled.div`
   height: calc(100% - 20px);
   margin: 10px;
   border-radius: 5px;
-  width: 350px;
+  width: 650px;
 `;
 
-const App = () => (
-  <ApolloProvider client={client}>
-    <AppSection>
-      <AppHeader>
-        <h1>FDS CLASSIC CS</h1>
-      </AppHeader>
-      <MainContent>
-        <WidgetPanel>
-          <RaidersList />
-        </WidgetPanel>
-        <WidgetPanel>
-          WIP :(
-        </WidgetPanel>
-      </MainContent>
-      <AppFooter>Frères de Sang 2020</AppFooter>
-    </AppSection>
-  </ApolloProvider>
-);
+const App = () => {
+  const [currentRaider, setCurrentRaider] = useState('');
+  return (
+    <ApolloProvider client={client}>
+      <AppSection>
+        <AppHeader>
+          <h1>FDS CLASSIC CS</h1>
+        </AppHeader>
+        <MainContent>
+          <WidgetPanel>
+            <RaidersList currentRaider={currentRaider} setCurrentRaider={setCurrentRaider} />
+          </WidgetPanel>
+          <WidgetPanel>
+            <RaiderDetails raiderId={currentRaider} />  
+          </WidgetPanel>
+        </MainContent>
+        <AppFooter>Frères de Sang 2020</AppFooter>
+      </AppSection>
+    </ApolloProvider>
+  );
+};
 
 export default App;
