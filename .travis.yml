@@ -3,15 +3,18 @@ language: node_js
 node_js:
   - 'node'
 
-script:
-  - cd client && npm install && cd ..
-  - cd client && npm run build && cd ..
-  - cd server && npm install && cd ..
-  - cd server && npm run build && cd ..
+matrix:
+  include:
+    - name: "Client"
+      env: PACKAGE_LOCATION=client
+    - name: "server"
+      env: PACKAGE_LOCATION=server
 
-branches:
-  only:
-  - master
+
+script:
+  - cd $PACKAGE_LOCATION
+  - npm install
+  - npm build
 
 cache:
   directories:

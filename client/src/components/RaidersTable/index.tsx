@@ -3,18 +3,29 @@ import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { Raider, RaidersListProps } from '../RaidersList';
 import { ClassIcon } from '../ClassIcon';
+import { TableContainer } from '@material-ui/core';
+import styled from 'styled-components';
+import { TableToolbar } from './TableToolbar';
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 650,
+    width: "100%",
+  },  
+  root: {
+    width: 650,
+  },
+  container: {
+    height: 'calc(95% - 24px)',
   },
 });
+
+const Header = styled.div`
+  height: 5%;
+`;
 
 export interface RaidersTableProps extends RaidersListProps {
     raiders: Raider[];
@@ -26,8 +37,11 @@ export const RaidersTable: React.FC<RaidersTableProps> = props => {
   const { raiders, setCurrentRaider, currentRaider } = props;
 
   return (
-    <TableContainer component={Paper}>
-      <Table stickyHeader className={classes.table} aria-label="Liste des raiders">
+    <>
+     
+    <TableToolbar title="Liste des raiders" />
+    <TableContainer className={classes.container}>
+      <Table stickyHeader size="small" className={classes.table} aria-label="Liste des raiders">
         <TableHead>
           <TableRow>
             <TableCell align="center">Raider</TableCell>
@@ -49,6 +63,7 @@ export const RaidersTable: React.FC<RaidersTableProps> = props => {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
+      </TableContainer>
+      </>
   );
 }
