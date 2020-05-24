@@ -71,13 +71,12 @@ const mapCSLog = (value: CSLogDto): CSLog => {
 
 const getRaider = async (_: unknown, {id}: {id: string}, context: IContext): Promise<Raider | undefined> => {
   var result = (await context.pool.query('SELECT * FROM "Raiders" WHERE "Id" = $1 limit 1', [id])) as QueryResult<RaiderDto>;
-  console.log('result', result);
   if(result.rowCount > 0) return mapRaider(result.rows[0]);
   return undefined;
 }
 
 const getRaiders = async (_:unknown, __: unknown, context: IContext): Promise<Raider[]> => {
-  var result = (await context.pool.query('SELECT * FROM "Raiders"')) as QueryResult<RaiderDto>;
+  var result = (await context.pool.query('SELECT * FROM "Raiders" where "Deleted" is FALSE')) as QueryResult<RaiderDto>;
   return result.rows.map(x => mapRaider(x));
 }
 

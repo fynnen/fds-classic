@@ -1,12 +1,13 @@
 import * as React from "react";
 import { gql, ApolloError } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
-import styled from "styled-components";
-import { ClassIcon } from "../ClassIcon";
+import { RaidersTable } from "../RaidersTable";
+import { ClassEnum } from "../../App";
 
 const RAIDERS = gql`
   query {
     raiders {
+      id
       name
       totalCS
       class {
@@ -16,15 +17,23 @@ const RAIDERS = gql`
   }
 `;
 
-interface Class {
+export interface Class {
   id: number;
   name: string;
 }
-
-interface Raider {
+export interface CSLog {
+  id: string;
+  CS: number;
+  reason: string;
+  date: string;
+  isAdjustment: boolean;
+}
+export interface Raider {
+  id: string;
   name: string;
   totalCS: number;
   class: Class;
+  logs?: CSLog[];
 }
 
 interface RaidersQueryResult {
@@ -33,43 +42,26 @@ interface RaidersQueryResult {
   data: Raider[];
 }
 
-export const RaidersList: React.FC<any> = props => {
+export interface RaidersListProps {
+  currentFilter: ClassEnum;
+  currentRaider: string;
+  setCurrentRaider: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const RaidersList: React.FC<RaidersListProps> = props => {
+  const { currentFilter } = props;
   const { loading, error, data } = useQuery(RAIDERS);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-  console.log(data);
-  return (
-  <table style={{borderCollapse:'collapse', width: '100%'}}>
-    <Row>
-      <th>Raider</th>
-      <th>Classe</th>
-      <th>Total CS</th>
-    </Row>
-    {data.raiders.map((x: Raider) => <RaiderRow raider={x}/>)}
-  </table>
-  );
-};
+    const raiders = data.raiders as Raider[];
+  let filteredRaiders;
+  if(currentFilter === ClassEnum.All) {
+    filteredRaiders = data.raiders;
+  } else {
+    filteredRaiders = raiders.filter(x => x.class.name === currentFilter);
+  }
+  
 
-interface RaiderRowProps {
-  raider: Raider;
-}
-
-const Row = styled.tr`
-  border-bottom-color: rgb(240, 243, 255);
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-`;
-
-const RaiderRow: React.FC<RaiderRowProps> = props => {
-  const { raider } = props;
-  return (
-    <>
-      <Row>
-        <td>{raider.name}</td>
-        <td><span><ClassIcon class={raider.class.name}/></span>{raider.class.name}</td>
-        <td>{raider.totalCS}</td>
-      </Row>
-    </>
-  );
+  return <RaidersTable raiders={filteredRaiders} {...props} />;
 };
